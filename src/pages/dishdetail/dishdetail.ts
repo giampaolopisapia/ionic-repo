@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ActionSheetController } from 'ionic-angular';
 import { Dish } from '../../shared/dish';
 import { Comment } from '../../shared/comment';
 import { FavoriteProvider } from '../../providers/favorite/favorite';
@@ -25,6 +25,7 @@ export class DishdetailPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     @Inject('BaseURL') private BaseURL,
     private toastCtrl: ToastController,
+    private actionSheetCtrl: ActionSheetController,
     private favoriteservice: FavoriteProvider) {
     this.dish = navParams.get('dish');
     this.numcomments = this.dish.comments.length;
@@ -46,5 +47,31 @@ export class DishdetailPage {
       position: 'middle',
       duration: 3000
     }).present();
+  }
+
+  presentActionSheet() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Select Actions',
+      buttons: [
+        {
+          text: 'Add to Favorite',
+          handler: () => {
+            this.addToFavorites();
+          }
+        },{
+          text: 'Add comment',
+          handler: () => {
+            console.log('Add comment');
+          }
+        },{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 }
