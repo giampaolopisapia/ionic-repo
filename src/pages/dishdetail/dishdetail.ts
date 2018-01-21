@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, ActionSheetController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ActionSheetController, ModalController } from 'ionic-angular';
 import { Dish } from '../../shared/dish';
 import { Comment } from '../../shared/comment';
 import { FavoriteProvider } from '../../providers/favorite/favorite';
-
+import { CommentPage } from '../comment/comment';
 /**
  * Generated class for the DishdetailPage page.
  *
@@ -26,10 +26,17 @@ export class DishdetailPage {
     @Inject('BaseURL') private BaseURL,
     private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
-    private favoriteservice: FavoriteProvider) {
+    private favoriteservice: FavoriteProvider,
+    private modalCtrl: ModalController
+  )
+   {
     this.dish = navParams.get('dish');
-    this.numcomments = this.dish.comments.length;
     this.favorite = this.favoriteservice.isFavorite(this.dish.id);
+    this.calculateCommentsStats();
+  }
+
+  calculateCommentsStats(){
+    this.numcomments = this.dish.comments.length;
     let total = 0;
     this.dish.comments.forEach(comment => total += comment.rating );
     this.avgstars = (total/this.numcomments).toFixed(2);
@@ -54,14 +61,23 @@ export class DishdetailPage {
       title: 'Select Actions',
       buttons: [
         {
-          text: 'Add to Favorite',
+          text: 'Add to Favorites',
           handler: () => {
             this.addToFavorites();
           }
         },{
-          text: 'Add comment',
+          text: 'Add Comment',
           handler: () => {
-            console.log('Add comment');
+            let modal = this.modalCtrl.create(CommentPage);
+            modal.onDidDismiss(
+              comment => {
+                if(comment){
+                  this.dish.comments.push(comment);
+                  this.calculateCommentsStats();
+                }
+              }
+            );
+            modal.present();
           }
         },{
           text: 'Cancel',
