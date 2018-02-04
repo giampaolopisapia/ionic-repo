@@ -74,6 +74,7 @@ export class RegisterPage {
     const options : CameraOptions = {
       allowEdit: true,
       mediaType: this.camera.MediaType.PICTURE,
+      destinationType: this.camera.DestinationType.FILE_URI,
       sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
     };
 
