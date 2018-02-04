@@ -70,6 +70,21 @@ export class RegisterPage {
 
   }
 
+  getFromLibrary(){
+    const options : CameraOptions = {
+      allowEdit: true,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+    };
+
+    this.camera.getPicture(options)
+      .then(
+        (imageData) => {
+          this.image = imageData;
+        }, (err) => console.log('Error obtaining image')
+      )
+  }
+
   onSubmit(){
     console.log(this.registerForm.value);
     this.dismiss();
